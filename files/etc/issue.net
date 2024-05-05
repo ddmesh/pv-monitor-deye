@@ -1,0 +1,7 @@
+*** Orange Pi ***
+login: orangepi
+pw: orangepi
+-> sudo su
+pw: orangepi
+
+Tools: orangepi-config

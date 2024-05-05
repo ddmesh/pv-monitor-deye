@@ -1,0 +1,62 @@
+#! /bin/sh
+
+### BEGIN INIT INFO
+# Provides:		deye
+# Required-Start:	$network $remote_fs $syslog
+# Required-Stop:	$network $remote_fs $syslog
+# Default-Start:	2 3 4 5
+# Default-Stop:
+# Short-Description:
+### END INIT INFO
+
+# irgendwie funktioniert die datei sysctl.conf nicht oder wird laut internet
+# zu zeitig aufgerufen.
+# Daher mach ich es als rc.script.
+# im network manager ipv6 muss disabled werden
+
+#root@pv-monitor[SSD]:/etc# cat "NetworkManager/system-connections/Orange Pi ethernet.nmconnection"
+#root@pv-monitor[SSD]:/etc# nmcli c modify 2d903b88-be94-44e8-a905-c2b7b9ddd6f9 ipv6.method "disabled"
+#
+
+
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+. /lib/lsb/init-functions
+
+case "$1" in
+	start)
+		logger -s -t "firewall" "set firewall rules"
+		iptables -A OUTPUT -d 127.0.0.0/8 -j ACCEPT
+		iptables -A OUTPUT -d 10.0.0.0/8 -j ACCEPT
+		iptables -A OUTPUT -d 172.16.0.0/12 -j ACCEPT
+		iptables -A OUTPUT -d 192.168.0.0/16 -j ACCEPT
+		iptables -A OUTPUT -d 169.254.0.0/16 -j ACCEPT
+		iptables -A OUTPUT -j DROP
+
+		# sysctl -a | grep ipv6.*disable
+		sysctl -w net.ipv6.conf.all.disable_ipv6=1
+		sysctl -w net.ipv6.conf.default.disable_ipv6=1
+		sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+		sysctl -w net.ipv6.conf.all.disable_ipv6=1
+		sysctl -w net.ipv6.conf.eth0.disable_ipv6=1
+		sysctl -w net.ipv6.conf.wlan0.disable_ipv6=1
+
+		logger -s -t "deye" "starting /root/collect-data.sh from /etc/rc.local"
+		/root/collect-data.sh >/dev/null &
+		;;
+
+	stop)
+		iptables -F OUTPUT
+		killall collect-data.sh
+		;;
+
+	restart|reload)
+		$1 stop
+		$1 start
+		;;
+
+	*) echo "Usage: deye start|stop|restart|reload"
+		;;
+esac
+
+exit 0

@@ -1,0 +1,18 @@
+{
+	"sub": {
+		"outputMode": "clean",
+		"mqttVersion": 5,
+		"hostname": "172.17.0.1",
+		"clientId": "mqttx_1dbf61a4",
+		"clean": true,
+		"protocol": "mqtt",
+		"path": "/mqtt",
+		"reconnectPeriod": 1000,
+		"maximumReconnectTimes": 10,
+		"reqProblemInfo": true,
+		"topic": [
+			"deye/#"
+		],
+		"port": 1883
+	}
+}
