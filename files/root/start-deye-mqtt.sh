@@ -4,7 +4,7 @@
 # Sammelt daten vom WR ein und sendet diese an einen MQTT broker.
 # Der broker (mosquitto) läuft local auf dem orange pi
 
-# https://github.com/ddmesh/deye-inverter-mqtt/blob/main/README.md
+# https://github.com/kbialek/deye-inverter-mqtt
 #
 # deye-mqtt deye-docker.env anpassen:
 #
