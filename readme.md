@@ -30,7 +30,7 @@ sich gut im Internet suchen.</br>
 ## Arbeitsweise
 Nach dem Booten werden drei Docker-Images (automatisch) und das collect-data.sh script gestartet.
 Der Docker-Container 'deye-mqtt' ruft alle verfügbaren Daten vom Deye ab und stellt diese via mqtt bereit. \
-collect-data.sh nutzt einen mqtt-cli client, um diese Daten vom Container abzurufen und diese in eine Datenbank (graphite) zuspeichern. \
+collect-data.sh nutzt einen mqtt-cli client (https://mqttx.app/), um diese Daten vom Container abzurufen und diese in eine Datenbank (graphite) zuspeichern. \
 Der Container 'grafana' stellt die Webseite bereit, welche sich den Daten aus
 der Datenbank bedient.
 
