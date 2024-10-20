@@ -21,7 +21,46 @@ Aufgebaut habe ich das mit:
 <img src="images/orange-pi-zero2.png" width="300"> <img src="images/orange-pi-console-1.png" width="300">
 
 Die SDCard wird zum Booten des OrangePi verwendet. Die gesamte Installation erfolgte im ersten Schritt auf der SDCard.
-In einem späteren Schritt, habe ich diese auf die SSD komplett kopiert, das Filesystem erweitert, einen neue ID für die SSD vergeben und in der Bootconfig (/boot/...) das Root-FS auf die SSD gestellt. Grund ist, dass eine SSD für die vielen Schreibzugriffe optimiert ist und eine SDCard nach kurzer Zeit kaputt geht.
+- Anpassen der /etc/fstab: Hier müssen aber etwas die parameter angepasst werden, damit beim stromausfall möglichst kein FS Schaden entsteht.
+`UUID=5e468073-a25c-4048-be42-7f5cfc36ce25 / ext4 defaults,noatime,sync,discard,data_err=ignore,errors=continue,nocheck 0 1`
+
+In einem späteren Schritt, habe ich
+die SDCARD auf die SSD komplett kopiert (gecloned mit balenaEtcher).
+Dabei werden alle UUIDs der Speichermediums auch kopiert.
+/boot/orangepiEnv.txt und /etc/fstab haben damit auf der SSD die richigen
+Werte. \
+Damit es zu keinen konflikt kommt, muss die UUID der SDCard geändert werden.
+
+Grund ist, dass eine SSD für die vielen Schreibzugriffe optimiert ist und eine SDCard nach kurzer Zeit kaputt geht.
+
+~~~sh
+# show all UUIDs
+blkid
+
+# SDCARD
+#      assign new UUID to sdcard partion (welche gebootet werden soll)
+tune2fs -U random /dev/mmcblk0p1
+
+#      andern der PARTUUID
+#      x - expert
+#      i - anpassen der PartionTableUUID, die fuer partionen verwendet wird.
+#      0x11223344
+#      r - return main menu
+#      w - write+exit (dauert etwas)
+fdisk /dev/mmcblk0
+
+# SSD
+#      partion der ssd erweitern
+#       parted> print
+#       parted> resizepart 1 100%
+#       parted> quit
+parted /dev/sdb
+
+# filesystem erweitern
+> e2fsck -f /dev/sdb1
+> resize2fs /dev/sdb1
+
+~~~
 
 Ich werde hier nur Anhaltspunkte geben und meine Scripts beschreiben. Infos
 zur Installation oder das Clonen auf eine SSD+Anpassung von /boot/... lassen
