@@ -199,7 +199,7 @@ Siehe dazu: http://<ip>/admin/orgs
 
 # Anpassen der Grafana Konfiguration in
 # /usr/share/grafana/conf/default.ini
-> vi /usr/share/grafana/conf/default.ini
+> vi /usr/share/grafana/conf/defaults.ini
 ~~~
 
 Beispiel:
